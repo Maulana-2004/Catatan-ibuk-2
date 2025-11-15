@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catatan Uang Ibuk</title>
+
+  <!-- 🌿 Catatan Uang Ibuk - Popup Input (Google Sheet Green Theme by Maull) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root {
+      --green-main: #0f9d58;
+      --green-light: #b7e1cd;
+      --bg: #f1f3f4;
+      --white: #ffffff;
+      --gray: #5f6368;
+      --radius: 14px;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background: var(--bg);
+      margin: 0;
+      display: block;
+      padding: 10px;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    .open-popup-btn {
+      display: block;
+      width: 100%;
+      background: var(--green-main);
+      color: white;
+      font-weight: 600;
+      border: none;
+      padding: 14px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 16px;
+      box-shadow: 0 4px 10px rgba(15, 157, 88, 0.2);
+      transition: 0.25s;
+    }
+
+    .open-popup-btn:hover {
+      background: #0c7b43;
+      transform: scale(1.02);
+    }
+
+    .popup {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(32, 33, 36, 0.4);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .popup-content {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+      padding: 25px 30px;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+      position: relative;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .popup-content h2 {
+      font-size: 20px;
+      color: var(--green-main);
+      margin-bottom: 6px;
+    }
+
+    .popup-content p {
+      color: var(--gray);
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+
+    .close-btn {
+      position: absolute;
+      right: 15px;
+      top: 10px;
+      font-size: 22px;
+      cursor: pointer;
+      color: #888;
+    }
+
+    .close-btn:hover {
+      color: #000;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      text-align: left;
+    }
+
+    label {
+      font-size: 14px;
+      color: #333;
+    }
+
+    input,
+    select,
+    textarea {
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #dadce0;
+      background: #f8f9fa;
+      font-size: 14px;
+      transition: 0.2s;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--green-main);
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(15, 157, 88, 0.2);
+    }
+
+    button[type="submit"] {
+      margin-top: 12px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 10px;
+      background: var(--green-main);
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.25s;
+    }
+
+    button[type="submit"]:hover {
+      background: #0c7b43;
+    }
+
+    #status {
+      margin-top: 10px;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--gray);
+    }
+
+    .sheet-container {
+      margin-top: 25px;
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: 0 4px 15px rgba(15, 157, 88, 0.1);
+      padding: 20px;
+      text-align: center;
+    }
+
+    .sheet-container h3 {
+      font-size: 16px;
+      margin-bottom: 10px;
+      color: var(--green-main);
+    }
+
+    /* bottom mini nav */
+    .bottom-mini-nav {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-evenly;
+      text-align: center;
+      padding: 10px 0;
+      background: #e6f4ea;
+      border-radius: 12px;
+    }
+
+    .bottom-mini-nav a {
+      text-decoration: none;
+      color: #0f9d58;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .bottom-mini-nav small {
+      display: block;
+      font-size: 10px;
+      color: #555;
+      font-weight: 400;
+      margin-top: 2px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="wrapper">
+
+    <button class="open-popup-btn">
+      <i class="fa-solid fa-circle-plus"></i> Catat Uang Ibuk
+    </button>
+
+    <div class="popup" id="popup">
+      <div class="popup-content">
+        <span class="close-btn">&times;</span>
+
+        <h2><i class="fa-solid fa-wallet"></i> Catatan Uang Ibuk</h2>
+        <p>Input transaksi: Uang Masuk / Uang Keluar</p>
+
+        <form id="ibukForm">
+
+          <label><i class="fa-solid fa-calendar-days"></i> Tanggal</label>
+          <input type="date" id="tanggal" required>
+
+          <label><i class="fa-solid fa-list"></i> Jenis Transaksi</label>
+          <select id="jenis" required>
+            <option value="">-- pilih jenis --</option>
+            <option value="Masuk">Uang Masuk</option>
+            <option value="Keluar">Uang Keluar</option>
+          </select>
+
+          <label><i class="fa-solid fa-coins"></i> Nominal (Rp)</label>
+          <input type="number" id="nominal" placeholder="Masukkan nominal" required>
+
+          <label><i class="fa-solid fa-note-sticky"></i> Catatan</label>
+          <textarea id="catatan" rows="3" placeholder="Contoh: bayar listrik, tabungan ibuk..." required></textarea>
+
+          <button type="submit">
+            <i class="fa-solid fa-paper-plane"></i> Kirim ke Google Sheet
+          </button>
+
+        </form>
+
+        <div id="status"></div>
+
+      </div>
+    </div>
+
+    <div class="sheet-container">
+      <h3><i class="fa-solid fa-sheet-plastic"></i> Monitoring Data</h3>
+
+      <iframe src="https://docs.google.com/spreadsheets/u/0/d/1sQVSYY2J9v8XgxXGM7-ynjMZOVEsarKu78ovLNdaroQ/htmlview#gid=1074306653" frameborder="0" width="100%" height="400"></iframe>
+    </div>
+
+  </div>
+
+  <script>
+    (function () {
+      const scriptURL = "https://script.google.com/macros/s/AKfycbyioIpH3u7hp0Oq68uADgC3n1Sw_yXUMJMvpzOgDQw0sluOMeSSuI7QrHEQ_S4wTJL7/exec";
+
+      const popup = document.getElementById("popup");
+      const openBtn = document.querySelector(".open-popup-btn");
+      const closeBtn = document.querySelector(".close-btn");
+
+      openBtn.addEventListener("click", () => popup.style.display = "flex");
+      closeBtn.addEventListener("click", () => popup.style.display = "none");
+
+      window.addEventListener("click", e => {
+        if (e.target === popup) popup.style.display = "none";
+      });
+
+      document.getElementById("ibukForm").addEventListener("submit", e => {
+        e.preventDefault();
+
+        const data = {
+          tanggal: document.getElementById("tanggal").value,
+          jenis: document.getElementById("jenis").value,
+          nominal: document.getElementById("nominal").value,
+          catatan: document.getElementById("catatan").value
+        };
+
+        const status = document.getElementById("status");
+        status.innerHTML = "⏳ Mengirim data...";
+
+        fetch(scriptURL, { method: "POST", body: JSON.stringify(data) })
+          .then(res => res.json())
+          .then(res => {
+            if (res.status === "success") {
+              status.innerHTML = "✅ Data berhasil dikirim!";
+              document.getElementById("ibukForm").reset();
+              setTimeout(() => popup.style.display = "none", 1000);
+            } else {
+              status.innerHTML = "❌ Gagal mengirim data.";
+            }
+          })
+          .catch(err => {
+            status.innerHTML = "⚠️ Error: " + err.message;
+          });
+      });
+    })();
+  </script>
+
+  <div class="bottom-mini-nav">
+
+    <a href="https://rabbitcnnn.blogspot.com/p/ibuk.html">
+      🧾<br><small>Catatan Ibuk</small>
+    </a>
+
+    <a href="LINK_SAYA">
+      👤<br><small>Catatan Saya</small>
+    </a>
+
+    <a href="https://rabbitcnnn.blogspot.com/p/root-green-main-0f9d58-green-light_8.html?m=1">
+      ▶️<br><small>YouTube</small>
+    </a>
+
+  </div>
+
+</body>
+
+</html>
